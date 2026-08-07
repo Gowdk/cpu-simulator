@@ -1,0 +1,3 @@
+/*
+    Decides which of the n inputs it will output based on the control signal supplied.
+*/
