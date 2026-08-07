@@ -38,8 +38,8 @@ export function createAppMarkup(
             class="program-instruction"
             style="
               display: grid;
-              grid-template-columns: 3rem 1fr;
-              gap: 0.75rem;
+              grid-template-columns: 1.5rem 1fr;
+              gap: 0.40rem;
               align-items: baseline;
               text-align: left;
             "
@@ -88,21 +88,18 @@ export function createAppMarkup(
     <main>
       <header>
         <h1>CPU Simulator</h1>
-        
-        <p>
-          DISCLAIMER: This was created with the help of AI. 
-          I did my best to model this CPU simulation after
-          the slides (with a lot of double-checking), however,
-          there is a small change I missed something! If you 
-          find a bug fix (i.e some circuit is incorrect),
-          email me the problem (kgowdar8@gmail.com) and I will
-          fix it!
-        </p>
 
         <p>
-          Step through a program and observe how
-          instructions travel through different CPU
-          datapath implementations.
+          DISCLAIMER: This was created with the help of AI.
+        </p>
+        <br> 
+        <p>
+          I did my best to model this CPU simulation after
+          the slides (with a lot of double-checking); however, 
+          there is a small change I missed something! If you 
+          find a bug fix (i.e some line is incorrect),
+          email me the problem (kgowdar8@gmail.com) and I will
+          fix it!
         </p>
       </header>
 
