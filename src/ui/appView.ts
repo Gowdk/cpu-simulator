@@ -34,13 +34,22 @@ export function createAppMarkup(
           );
 
         return `
-          <li class="program-instruction">
+          <div
+            class="program-instruction"
+            style="
+              display: grid;
+              grid-template-columns: 3rem 1fr;
+              gap: 0.75rem;
+              align-items: baseline;
+              text-align: left;
+            "
+          >
             <span class="program-address">
               ${address}
             </span>
 
             <code>${assembly}</code>
-          </li>
+          </div>
         `;
       })
       .join("");
@@ -79,6 +88,16 @@ export function createAppMarkup(
     <main>
       <header>
         <h1>CPU Simulator</h1>
+        
+        <p>
+          DISCLAIMER: This was created with the help of AI. 
+          I did my best to model this CPU simulation after
+          the slides (with a lot of double-checking), however,
+          there is a small change I missed something! If you 
+          find a bug fix (i.e some circuit is incorrect),
+          email me the problem (kgowdar8@gmail.com) and I will
+          fix it!
+        </p>
 
         <p>
           Step through a program and observe how
@@ -119,9 +138,17 @@ export function createAppMarkup(
               Instructions
             </h3>
 
-            <ol class="program-list">
+            <div
+              class="program-list"
+              style="
+                display: grid;
+                gap: 0.4rem;
+                justify-items: stretch;
+                text-align: left;
+              "
+            >
               ${programMarkup}
-            </ol>
+            </div>
           </section>
 
           <section
