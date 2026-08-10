@@ -96,7 +96,7 @@ export function createAppMarkup(
         <p>
           I did my best to model this CPU simulation after
           the slides (with a lot of double-checking); however, 
-          there is a small change I missed something! If you 
+          there is a small chance I missed something! If you 
           find a bug fix (i.e some line is incorrect),
           email me the problem (kgowdar8@gmail.com) and I will
           fix it!

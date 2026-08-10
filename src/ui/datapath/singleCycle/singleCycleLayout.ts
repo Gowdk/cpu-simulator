@@ -154,7 +154,7 @@ export const SINGLE_CYCLE_LAYOUT:
         height: 105,
         ports: [
           { id: "alu-op-input", label: "", side: "left", position: 30 / 105 },
-          { id: "funct-input", label: "Funct [6-0]", inset: 14, side: "bottom", position: 55 / 120 },
+          { id: "funct-input", label: "Funct [5-0]", inset: 14, side: "bottom", position: 55 / 120 },
           { id: "output", label: "", side: "top", position: 60 / 120 },
         ],
       },
