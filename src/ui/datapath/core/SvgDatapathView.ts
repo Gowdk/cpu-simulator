@@ -56,6 +56,19 @@ export class SvgDatapathView<
   private readonly activeWireIds =
     new Set<TWireId>();
 
+  /**
+   * Architecture-specific activity classes applied during the current
+   * frame, e.g. "activity-if" and "activity-wb".
+   */
+  private readonly activityAssignments:
+    Array<{
+      readonly element: SVGElement;
+      readonly className: string;
+    }> = [];
+
+  private readonly multiActivityElements =
+    new Set<SVGElement>();
+
   private phaseCodeElement: HTMLElement | null = null;
   private phaseTitleElement: HTMLElement | null = null;
   private phaseDescriptionElement: HTMLElement | null = null;
@@ -163,6 +176,11 @@ export class SvgDatapathView<
     this.bringActiveWiresToFront(
       scene,
       frame.activeWireIds,
+    );
+
+    this.applyActivityGroups(
+      scene,
+      frame.activityGroups ?? [],
     );
 
     this.renderValues(scene, frame.values);
@@ -404,6 +422,8 @@ export class SvgDatapathView<
       TWireId
     >,
   ): void {
+    this.clearActivityAssignments();
+
     for (
       const componentId of
       this.activeComponentIds
@@ -469,10 +489,108 @@ export class SvgDatapathView<
     }
   }
 
+  private applyActivityGroups(
+    scene: SvgDatapathScene<
+      TComponentId,
+      TWireId
+    >,
+    groups:
+      readonly import("./types").DatapathActivityGroup<
+        TComponentId,
+        TWireId
+      >[],
+  ): void {
+    const activityCount =
+      new Map<SVGElement, number>();
+
+    const applyClass = (
+      element: SVGElement,
+      key: string,
+    ): void => {
+      const className =
+        `activity-${toCssClassToken(key)}`;
+
+      element.classList.add(className);
+
+      this.activityAssignments.push({
+        element,
+        className,
+      });
+
+      activityCount.set(
+        element,
+        (activityCount.get(element) ?? 0) + 1,
+      );
+    };
+
+    for (const group of groups) {
+      for (const componentId of group.componentIds) {
+        const element =
+          scene.componentElements.get(componentId);
+
+        if (!element) {
+          throw new Error(
+            `Unknown datapath component id in activity group "${group.key}": ${componentId}`,
+          );
+        }
+
+        element.classList.add("active");
+        this.activeComponentIds.add(componentId);
+        applyClass(element, group.key);
+      }
+
+      for (const wireId of group.wireIds) {
+        const element =
+          scene.wireElements.get(wireId);
+
+        if (!element) {
+          throw new Error(
+            `Unknown datapath wire id in activity group "${group.key}": ${wireId}`,
+          );
+        }
+
+        element.classList.add("active");
+        this.activeWireIds.add(wireId);
+        applyClass(element, group.key);
+      }
+    }
+
+    for (const [element, count] of activityCount) {
+      if (count <= 1) {
+        continue;
+      }
+
+      element.classList.add("multi-activity");
+      this.multiActivityElements.add(element);
+    }
+  }
+
+  private clearActivityAssignments(): void {
+    for (
+      const { element, className } of
+      this.activityAssignments
+    ) {
+      element.classList.remove(className);
+    }
+
+    for (
+      const element of
+      this.multiActivityElements
+    ) {
+      element.classList.remove(
+        "multi-activity",
+      );
+    }
+
+    this.activityAssignments.length = 0;
+    this.multiActivityElements.clear();
+  }
+
   private clearReferences(): void {
     this.scene = null;
     this.activeComponentIds.clear();
     this.activeWireIds.clear();
+    this.clearActivityAssignments();
     this.phaseCodeElement = null;
     this.phaseTitleElement = null;
     this.phaseDescriptionElement = null;
@@ -635,4 +753,13 @@ function splitClassNames(
     .trim()
     .split(/\s+/u)
     .filter(Boolean);
+}
+
+function toCssClassToken(
+  value: string,
+): string {
+  return value.replace(
+    /[^a-zA-Z0-9_-]/gu,
+    "-",
+  );
 }

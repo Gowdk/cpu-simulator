@@ -1,10 +1,8 @@
 import type { Instruction } from "../instructions/Instruction";
 
-/*
-    To be used in the simplified version of the Single Cycle Implementation.
-    Eventually, Instruction Memory must be combined with data memory.
-
-*/
+/**
+ * Read-only instruction memory for the CPU simulator.
+ */
 export class InstructionMemory {
   private readonly instructions: readonly Instruction[];
 
@@ -12,8 +10,27 @@ export class InstructionMemory {
     this.instructions = instructions;
   }
 
+  /**
+   * Returns true when an instruction exists at the supplied byte address.
+   *
+   * This lets a pipelined CPU stop fetching after the final instruction
+   * while allowing instructions already in the pipeline to drain.
+   */
+  public hasInstruction(pc: number): boolean {
+    if (!this.isValidPc(pc)) {
+      return false;
+    }
+
+    const instructionIndex = pc / 4;
+    return instructionIndex < this.instructions.length;
+  }
+
   public read(pc: number): Instruction {
-    const instructionIndex = pc / 4;    // MIPS is 4 byte-addressed.
+    if (!this.isValidPc(pc)) {
+      throw new Error(`Invalid instruction address: ${pc}.`);
+    }
+
+    const instructionIndex = pc / 4;
     const instruction = this.instructions[instructionIndex];
 
     if (!instruction) {
@@ -21,5 +38,17 @@ export class InstructionMemory {
     }
 
     return instruction;
+  }
+
+  public getInstructionCount(): number {
+    return this.instructions.length;
+  }
+
+  private isValidPc(pc: number): boolean {
+    return (
+      Number.isInteger(pc) &&
+      pc >= 0 &&
+      pc % 4 === 0
+    );
   }
 }

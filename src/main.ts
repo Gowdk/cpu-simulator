@@ -4,6 +4,8 @@ import { SingleCycleCpu } from
   "./domain/cpu/architectures/SingleCycleCpu";
 import { MultiCycleCpu } from
   "./domain/cpu/architectures/multiCycle";
+import { PipelinedCpu } from
+  "./domain/cpu/architectures/pipelined";
 import type { Instruction } from
   "./domain/cpu/instructions/Instruction";
 
@@ -23,6 +25,15 @@ import type {
   MultiCycleWireId,
 } from "./ui/datapath/multiCycle";
 import {
+  PIPELINED_LAYOUT,
+  PipelinedSimulationController,
+} from "./ui/datapath/pipelined";
+import type {
+  PipelinedComponentId,
+  PipelinedPhase,
+  PipelinedWireId,
+} from "./ui/datapath/pipelined";
+import {
   SINGLE_CYCLE_LAYOUT,
   SingleCycleSimulationController,
 } from "./ui/datapath/singleCycle";
@@ -40,7 +51,8 @@ import { requireElement } from
  */
 type SimulationArchitecture =
   | "single-cycle"
-  | "multi-cycle";
+  | "multi-cycle"
+  | "pipelined";
 
 /**
  * Initial register value displayed by the UI and applied to each CPU.
@@ -57,7 +69,8 @@ export interface DemoMemoryValue {
 
 /**
  * Minimum CPU operations required by the shared demonstration-state
- * initializer. Both SingleCycleCpu and MultiCycleCpu satisfy this shape.
+ * initializer. SingleCycleCpu, MultiCycleCpu, and PipelinedCpu all
+ * satisfy this shape.
  */
 interface CpuStateSetupTarget {
   setRegister(
@@ -262,6 +275,7 @@ function parseSimulationArchitecture(
   switch (value) {
     case "single-cycle":
     case "multi-cycle":
+    case "pipelined":
       return value;
 
     default:
@@ -387,6 +401,52 @@ function createMultiCycleSimulation(
 }
 
 /**
+ * Creates and mounts the five-stage pipelined simulator.
+ *
+ * PipelinedCpu.step() executes one real hardware clock cycle. Several
+ * instructions may occupy IF, ID, EX, MEM, and WB simultaneously, and
+ * the frame highlights each active stage independently.
+ */
+function createPipelinedSimulation(
+  elements: ApplicationElements,
+): SimulationController {
+  const cpu =
+    new PipelinedCpu(demoProgram);
+
+  const datapathView =
+    new SvgDatapathView<
+      PipelinedPhase,
+      PipelinedComponentId,
+      PipelinedWireId
+    >(
+      elements.datapathRoot,
+      {
+        ariaLabel:
+          "MIPS five-stage pipelined CPU datapath",
+        panelClassName:
+          "datapath-panel--pipelined",
+      },
+    );
+
+  datapathView.mount(
+    PIPELINED_LAYOUT,
+  );
+
+  return new PipelinedSimulationController({
+    cpu,
+    view: datapathView,
+    stepButton:
+      elements.stepSimulationButton,
+    resetButton:
+      elements.resetSimulationButton,
+    statusElement:
+      elements.simulationStatus,
+    initializeCpuState:
+      () => initializeDemoState(cpu),
+  });
+}
+
+/**
  * Central architecture factory. The rest of the application can work
  * with the shared SimulationController interface instead of knowing
  * which concrete controller is active.
@@ -403,6 +463,11 @@ function createSimulationController(
 
     case "multi-cycle":
       return createMultiCycleSimulation(
+        elements,
+      );
+
+    case "pipelined":
+      return createPipelinedSimulation(
         elements,
       );
   }
@@ -436,6 +501,17 @@ function updateSimulationDescription(
         "Each step executes one real CPU clock " +
         "cycle. An instruction may require several " +
         "steps to complete.";
+
+      return;
+
+    case "pipelined":
+      elements.simulationEyebrow.textContent =
+        "Pipelined Simulation (WIP)";
+
+      elements.simulationDescription.textContent =
+        "Each step executes one real CPU clock " +
+        "cycle. Multiple instructions can occupy " +
+        "IF, ID, EX, MEM, and WB at the same time.";
 
       return;
   }

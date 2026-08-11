@@ -220,6 +220,10 @@ export function createAppMarkup(
                 <option value="single-cycle">
                   Single-cycle
                 </option>
+
+                <option value="pipelined">
+                  Pipelined (WIP)
+                </option>
               </select>
             </div>
 

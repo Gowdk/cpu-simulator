@@ -214,6 +214,29 @@ export type DatapathValueMap<
   >
 >;
 
+
+/**
+ * Optional architecture-specific activity grouping for a single frame.
+ *
+ * The generic view treats `key` only as a presentation hook. For the
+ * pipelined datapath, keys are the five stage names: if/id/ex/mem/wb.
+ *
+ * Existing single-cycle and multicycle frames do not need to provide
+ * activity groups and continue using the flat active-id collections.
+ */
+export interface DatapathActivityGroup<
+  TComponentId extends string,
+  TWireId extends string,
+> {
+  readonly key: string;
+
+  readonly componentIds:
+    readonly TComponentId[];
+
+  readonly wireIds:
+    readonly TWireId[];
+}
+
 export interface DatapathFrame<
   TPhase extends string,
   TComponentId extends string,
@@ -230,6 +253,17 @@ export interface DatapathFrame<
 
   readonly activeWireIds:
     readonly TWireId[];
+
+  /**
+   * Optional overlapping activity groups. A component may belong to
+   * more than one group in the same frame (for example, the Register
+   * File can be active in both ID and WB).
+   */
+  readonly activityGroups?:
+    readonly DatapathActivityGroup<
+      TComponentId,
+      TWireId
+    >[];
 
   readonly values:
     DatapathValueMap<TComponentId, TWireId>;

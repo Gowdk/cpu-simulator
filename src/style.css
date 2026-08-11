@@ -853,3 +853,266 @@ code {
     border-right-color: var(--border);
   }
 }
+
+
+/* =========================================================
+   SVG PIPELINED DATAPATH
+   ========================================================= */
+
+.datapath-panel--pipelined {
+  --dp-stage-if: #2563eb;
+  --dp-stage-if-fill: #eff6ff;
+
+  --dp-stage-id: #7c3aed;
+  --dp-stage-id-fill: #f5f3ff;
+
+  --dp-stage-ex: #dc2626;
+  --dp-stage-ex-fill: #fff1f2;
+
+  --dp-stage-mem: #047857;
+  --dp-stage-mem-fill: #ecfdf5;
+
+  --dp-stage-wb: #d97706;
+  --dp-stage-wb-fill: #fffbeb;
+
+  --dp-stage-shared: #475569;
+  --dp-stage-shared-fill: #f1f5f9;
+}
+
+.datapath-panel--pipelined .datapath-canvas {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.datapath-panel--pipelined .datapath-svg {
+  min-width: 1700px;
+  aspect-ratio: 1900 / 1050;
+}
+
+/*
+ * Pipeline registers sit on stage boundaries, so their neutral resting
+ * appearance differs slightly from ordinary combinational components.
+ */
+.datapath-panel--pipelined
+  .pipeline-if-id-register
+  .component-shape,
+.datapath-panel--pipelined
+  .pipeline-id-ex-register
+  .component-shape,
+.datapath-panel--pipelined
+  .pipeline-ex-mem-register
+  .component-shape,
+.datapath-panel--pipelined
+  .pipeline-mem-wb-register
+  .component-shape {
+  fill: #f8fafc;
+  stroke-dasharray: 7 4;
+}
+
+.datapath-panel--pipelined
+  .pipeline-hazard-detection-unit
+  .component-shape,
+.datapath-panel--pipelined
+  .pipeline-forwarding-unit
+  .component-shape,
+.datapath-panel--pipelined
+  .pipeline-control-hazard-unit
+  .component-shape {
+  fill: var(--dp-control-fill);
+}
+
+/* ------------------------- IF ------------------------- */
+
+.datapath-panel--pipelined
+  .component.activity-if
+  .component-shape {
+  fill: var(--dp-stage-if-fill);
+  stroke: var(--dp-stage-if);
+  stroke-width: 4;
+}
+
+.datapath-panel--pipelined
+  .wire.activity-if
+  polyline {
+  stroke: var(--dp-stage-if);
+  stroke-width: 3;
+}
+
+/* ------------------------- ID ------------------------- */
+
+.datapath-panel--pipelined
+  .component.activity-id
+  .component-shape {
+  fill: var(--dp-stage-id-fill);
+  stroke: var(--dp-stage-id);
+  stroke-width: 4;
+}
+
+.datapath-panel--pipelined
+  .wire.activity-id
+  polyline {
+  stroke: var(--dp-stage-id);
+  stroke-width: 3;
+}
+
+/* ------------------------- EX ------------------------- */
+
+.datapath-panel--pipelined
+  .component.activity-ex
+  .component-shape {
+  fill: var(--dp-stage-ex-fill);
+  stroke: var(--dp-stage-ex);
+  stroke-width: 4;
+}
+
+.datapath-panel--pipelined
+  .wire.activity-ex
+  polyline {
+  stroke: var(--dp-stage-ex);
+  stroke-width: 3;
+}
+
+/* ------------------------- MEM ------------------------ */
+
+.datapath-panel--pipelined
+  .component.activity-mem
+  .component-shape {
+  fill: var(--dp-stage-mem-fill);
+  stroke: var(--dp-stage-mem);
+  stroke-width: 4;
+}
+
+.datapath-panel--pipelined
+  .wire.activity-mem
+  polyline {
+  stroke: var(--dp-stage-mem);
+  stroke-width: 3;
+}
+
+/* ------------------------- WB ------------------------- */
+
+.datapath-panel--pipelined
+  .component.activity-wb
+  .component-shape {
+  fill: var(--dp-stage-wb-fill);
+  stroke: var(--dp-stage-wb);
+  stroke-width: 4;
+}
+
+.datapath-panel--pipelined
+  .wire.activity-wb
+  polyline {
+  stroke: var(--dp-stage-wb);
+  stroke-width: 3;
+}
+
+/*
+ * Shared hardware receives multiple activity classes. This most often
+ * happens at pipeline registers and at the Register File during ID + WB.
+ */
+.datapath-panel--pipelined
+  .component.multi-activity
+  .component-shape {
+  fill: var(--dp-stage-shared-fill);
+  stroke: var(--dp-stage-shared);
+  stroke-width: 5;
+  stroke-dasharray: 9 4;
+}
+
+.datapath-panel--pipelined
+  .component.multi-activity {
+  filter:
+    drop-shadow(3px 0 2px rgb(37 99 235 / 28%))
+    drop-shadow(-3px 0 2px rgb(217 119 6 / 28%));
+}
+
+.datapath-panel--pipelined
+  .component.activity-if
+  .component-title,
+.datapath-panel--pipelined
+  .component.activity-if
+  .component-value {
+  fill: var(--dp-stage-if);
+}
+
+.datapath-panel--pipelined
+  .component.activity-id
+  .component-title,
+.datapath-panel--pipelined
+  .component.activity-id
+  .component-value {
+  fill: var(--dp-stage-id);
+}
+
+.datapath-panel--pipelined
+  .component.activity-ex
+  .component-title,
+.datapath-panel--pipelined
+  .component.activity-ex
+  .component-value {
+  fill: var(--dp-stage-ex);
+}
+
+.datapath-panel--pipelined
+  .component.activity-mem
+  .component-title,
+.datapath-panel--pipelined
+  .component.activity-mem
+  .component-value {
+  fill: var(--dp-stage-mem);
+}
+
+.datapath-panel--pipelined
+  .component.activity-wb
+  .component-title,
+.datapath-panel--pipelined
+  .component.activity-wb
+  .component-value {
+  fill: var(--dp-stage-wb);
+}
+
+.datapath-panel--pipelined
+  .component.multi-activity
+  .component-title,
+.datapath-panel--pipelined
+  .component.multi-activity
+  .component-value {
+  fill: var(--dp-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .datapath-panel--pipelined {
+    --dp-stage-if: #60a5fa;
+    --dp-stage-if-fill: #172554;
+
+    --dp-stage-id: #c084fc;
+    --dp-stage-id-fill: #3b0764;
+
+    --dp-stage-ex: #fb7185;
+    --dp-stage-ex-fill: #4c0519;
+
+    --dp-stage-mem: #34d399;
+    --dp-stage-mem-fill: #052e16;
+
+    --dp-stage-wb: #fbbf24;
+    --dp-stage-wb-fill: #422006;
+
+    --dp-stage-shared: #cbd5e1;
+    --dp-stage-shared-fill: #1e293b;
+  }
+
+  .datapath-panel--pipelined
+    .pipeline-if-id-register
+    .component-shape,
+  .datapath-panel--pipelined
+    .pipeline-id-ex-register
+    .component-shape,
+  .datapath-panel--pipelined
+    .pipeline-ex-mem-register
+    .component-shape,
+  .datapath-panel--pipelined
+    .pipeline-mem-wb-register
+    .component-shape {
+    fill: #111827;
+  }
+}
