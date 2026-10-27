@@ -1,5 +1,11 @@
 # CPU Datapath Simulator #
 
+![Photo](IF_Load_Word.png)
+
+_Instruction-Fetch phase (MULTI-CYCLE) of a load-word execution_
+
+
+
 Link to website hosting the application [here](https://gowdk.github.io/cpu-simulator/)
 
 As I progressed through [COMP3370](https://umanitoba.ca/science/sites/science/files/2023-08/COMP-3370.pdf), I struggled to remember how assembly worked at a low level (I had taken the prerequisite [COMP2280](https://umanitoba.ca/science/sites/science/files/2023-08/COMP-2280.pdf) 2 years prior). Because there were no hands-on assignments to scaffold my learning in the course, I decided to write an application that models the datapaths for a simplified instruction set for the MIPS architecture as they are executed on the different organizations of the CPU taught in this course. I was able to complete the single/multi-cycle organizations, with pipelining remaining a WIP.
